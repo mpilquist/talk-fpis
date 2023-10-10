@@ -1,0 +1,15 @@
+= Functional Programming in Scala in 2023
+:source-highlighter: highlightjs
+:highlightjs-theme: css/solarized-dark.css
+:highlightjsdir: highlight
+:revealjs_theme: moon
+:revealjs_hash: true
+:customcss: css/presentation.css
+:icons: font
+
+image::images/fpis-cover.jpg[Cover of FPiS Second Edition,400]
+
+== Topics
+- type lambdas
+- derivation
+- cats 3
