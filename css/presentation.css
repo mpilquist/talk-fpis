@@ -15,6 +15,10 @@
   font-size: 0.5em;
 }
 
+.reveal pre {
+  width: 100%;
+}
+
 .conum[data-value] {
   background: rgba(185, 185, 185, 0.1);
 }
