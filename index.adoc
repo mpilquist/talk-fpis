@@ -6,6 +6,7 @@
 :revealjs_hash: true
 :customcss: css/presentation.css
 :icons: font
+:revealjs_width: 1200
 
 image::images/fpis-cover.jpg[Cover of FPiS Second Edition,400]
 
@@ -273,28 +274,176 @@ object Semigroup {
 
 FPiS => Scala 2
 
+[%notitle]
+=== FPiS to Scala 2
+
+[%header,format=dsv]
+|===
+Feature:Scala 2:Scala 3
+Type classes:Simulacrum:Built-in
+Type lambdas:Kind Projector:Built-in (-Ykind-projector)
+Arity & data polymorphism:Shapeless:Built-in
+Derivation:Shapeless:Built-in
+Partial unification (SI-2712):-Ypartial-unification (2.11+):Built-in
+Enumerations & ADTs:Enumeratum et al:Built-in
+|===
+
+[%notitle]
+=== FPiS to Scala 2
+
+image::images/fpis-traverse.jpg[Snippet of chapter 12 of Functional Programming in Scala,60%]
+
+=== 😱 Composition in Scalaz
+
+[source,scala]
+----
+val vname = validateName(name)
+val vbday = validateBirthday(bday)
+val vphone = validatePhone(phone)
+
+val personInfo = (vname |@| vbday |@| vphone)(PersonInfo(_, _, _))
+----
+
+[.notes]
+- DSL implemented with `ApplicativeBuilder{N}` types
+- Supports composing up to 12 values
 
 
+=== 😱 Composition in Cats
+
+[source,scala]
+----
+val vname = validateName(name)
+val vbday = validateBirthday(bday)
+val vphone = validatePhone(phone)
+
+val personInfo = (vname, vbday, vphone).mapN(PersonInfo(_, _, _))
+----
+
+[.notes]
+- Replaces DSL with regular tuples
+- Syntax enrichments generated at build time (of cats-core) with a source generator
+- Supports composing up to 22 values
+
+=== 😱 Composition in Scala 3
+
+[source,scala]
+----
+trait Apply[F[_]] extends Functor[F], Semigroupal[F]:
+  extension [A](fa: F[A]) def map2[B, Z](fb: F[B])(f: (A, B) => Z): F[Z]
+
+  extension [T <: NonEmptyTuple](tuple: T)
+    def mapN[B](using Tuple.IsMappedBy[F][T])(f: Tuple.InverseMap[T, F] => B): F[B] =
+      t.tupled.map(f)
+
+    def tupled(using Tuple.IsMappedBy[F][T]): F[Tuple.InverseMap[T, F]] =
+      ???
+----
+
+=== 😱 Composition in Scala 3
+
+[source,scala]
+----
+trait Apply[F[_]] extends Functor[F], Semigroupal[F]:
+  extension [A](fa: F[A]) def map2[B, Z](fb: F[B])(f: (A, B) => Z): F[Z]
+
+  extension [T <: NonEmptyTuple](tuple: T)
+    def mapN[B](using Tuple.IsMappedBy[F][T])(f: Tuple.InverseMap[T, F] => B): F[B] =
+      t.tupled.map(f)
+
+    def tupled(using Tuple.IsMappedBy[F][T]): F[Tuple.InverseMap[T, F]] =
+      def loop[X <: NonEmptyTuple](x: X): F[NonEmptyTuple] = x match
+        case (hd: F[a] @unchecked) *: EmptyTuple =>
+          hd.map(_ *: EmptyTuple)
+        case (hd: F[a] @unchecked) *: (tl: NonEmptyTuple) =>
+          val tail = loop(tl)
+          hd.map2(tail)(_ *: _)
+      loop(t).asInstanceOf[F[Tuple.InverseMap[T, F]]]
+----
+[.notes]
+* Efficient but requires casting / type checks
+
+=== 😱 Composition in Scala 3
+
+[source,scala]
+----
+trait Apply[F[_]] extends Functor[F], Semigroupal[F]:
+  extension [A](fa: F[A]) def map2[B, Z](fb: F[B])(f: (A, B) => Z): F[Z]
+
+  extension [T <: NonEmptyTuple](tuple: T)
+    inline def mapN[B](using Tuple.IsMappedBy[F][T])(f: Tuple.InverseMap[T, F] => B): F[B] =
+      t.tupled.map(f)
+
+    inline def tupled(using m: Tuple.IsMappedBy[F][T]): F[Tuple.InverseMap[T, F]] =
+      tupledGeneric(m(t))
+
+  private case class IsMap[T <: Tuple](value: Tuple.Map[T, F])
+
+  private inline def tupledGeneric[X <: Tuple](x: Tuple.Map[X, F]): F[X] =
+    inline IsMap(x) match
+      case t: IsMap[h *: EmptyTuple] => t.value.head.map(_ *: EmptyTuple)
+      case t: IsMap[h *: t] =>
+        val head = t.value.head
+        val tail = tupledGeneric(t.value.tail)
+        head.map2(tail)(_ *: _)
+----
+[.notes]
+* Type safe but runtime overhead
+* Courtesy of Daniel Beskin (@ncreep)
 
 
+== Transformers
 
+TODO
+Opaque types & extension methods
 
-== Misc Notes / Inspiration
-- improvements
-  - scala 2 stuff
-    - right-biased either & try
-    - linting (value discard)
-    - tie-fighters & \/ & IList
-    - sealed abstract case classes?
-    - functions & methods & code organization
-    - SI-2712, kind projector
-  - scala 3
-    - enums
-    - type classes & extension methods & givens
-    - type lambdas
-    - derivation
-    - tuples (mapN)
-- eras: building blocks, infrastructure, fulfillment
-- cats 3
-- caprese
+== Derivation
 
+TODO
+
+[%notitle]
+== Cats 3
+s/leopards/cats/
+
+[%notitle]
+=== Cats 3
+
+[source,scala]
+----
+import cats.syntax.all.*
+----
+
+vs.
+
+[source,scala]
+----
+import cats.given
+----
+
+=== Tuckman Model of Functional Scala
+[cols="1,3"]
+|===
+|Forming
+|Melting pot of styles; heavy influence from Haskell
+|Storming
+|Typelevel founded; scalac forked; Cats founded; integration painful
+|Norming
+|Cats, Cats Effect, & FS2 emerge as key infrastructure, enabling proliferation of interoperable libraries
+|Performing
+|Industrial grade, performant, integrated infrastructure; cross-platform; focus on application development
+|===
+
+=== Headwinds
+
+* Improvements to Java & Kotlin
+** Loom
+** Coroutines
+** Records
+* Direct Style 
+
+[%notitle]
+=== Final
+
+"Just as the past eight years have brought about a sea change in the nature of the Scala ecosystem and the context in which we evaluate and employ functional techniques, so too will the coming eight years bring about evolution and innovation. Perhaps when it comes time to update this volume once again, names such as Cats Effect will seem as dated and ancestral as Scalaz seems to us today."
+
+-- Daniel Spiewak, Foreword to FPiS
