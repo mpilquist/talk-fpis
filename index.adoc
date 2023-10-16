@@ -2,12 +2,13 @@
 = Functional Programming in Scala in 2023
 :source-highlighter: highlight.js
 :highlightjs-theme: css/solarized-dark.css
-:highlightjsdir: highlight
+:highlightjs-languages: scala
 :revealjs_theme: moon
 :revealjs_hash: true
 :customcss: css/presentation.css
 :icons: font
 :revealjs_width: 1200
+:docinfo: private
 
 image::images/fpis-cover.jpg[Cover of FPiS Second Edition,400]
 
@@ -49,7 +50,7 @@ trait Monoid[A] extends Semigroup[A]:
 [%notitle]
 === Type Classes
 
-[source,scala]
+[source,scala,highlight=5..6]
 ----
 package leopards
 
@@ -75,6 +76,7 @@ given intAdditionMonoid: Monoid[Int] with
   def empty = 0
 ----
 
+
 [source,scala]
 ----
 scala> import leopards.given
@@ -99,6 +101,7 @@ given optionMonoid[A: Semigroup]: Monoid[Option[A]] with
           case None     => x
           case Some(yy) => Some(xx |+| yy)
 ----
+[%step]
 [source,scala]
 ----
 scala> import leopards.given
@@ -109,7 +112,7 @@ val res0: Option[Int] = Some(3)
 [%notitle, transition=none slide-out]
 === Type Classes
 
-[source,scala]
+[source,scala,highlight=3|11]
 ----
 package leopards
 
@@ -149,7 +152,7 @@ given mapMonoid[A, B: Semigroup]: Monoid[Map[A, B]] with
 [%notitle, transition=none slide-out]
 === Type Classes
 
-[source,scala]
+[source,scala,highlight=3|9]
 ----
 package leopards
 
@@ -162,25 +165,10 @@ given mapMonoid[A, B](using $sb: Semigroup[B]): Monoid[Map[A, B]] with
           optionMonoid(using $sb).combine(ov2, Some(v)))
 ----
 
-[%notitle]
-=== Type Classes
-
-[source,scala]
-----
-package leopards
-
-trait Monoid[A] extends Semigroup[A]:
-  def empty: A
-
-  extension (as: IterableOnce[A])
-    def combineAll: A =
-      as.iterator.foldLeft(empty)(combine)
-----
-
 [%notitle, transition=slide-in none]
 === Type Classes
 
-[source,scala]
+[source,scala,highlight=6-8|10-12]
 ----
 package leopards
 
@@ -199,7 +187,7 @@ extension [A](as: IterableOnce[A])
 [%notitle, transition=none slide-out]
 === Type Classes
 
-[source,scala]
+[source,scala,highlight=8]
 ----
 package leopards
 

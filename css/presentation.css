@@ -30,3 +30,7 @@
 .line-through {
   text-decoration: line-through;
 }
+
+.reveal .hljs-ln-numbers {
+  display: none;
+}

@@ -435,7 +435,7 @@ trait Semigroup[A]:
   def combine(x: A, y: A): A
 
 trait Monoid[A] extends Semigroup[A]:
-  def empty: A</code></pre></div></div></div></section><section id="_type_classes_2"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">package leopards
+  def empty: A</code></pre></div></div></div></section><section id="_type_classes_2"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-line-numbers="5,6" data-lang="scala">package leopards
 
 trait Semigroup[A]:
   def combine(x: A, y: A): A
@@ -462,9 +462,9 @@ given optionMonoid[A: Semigroup]: Monoid[Option[A]] with
         y match
           case None     =&gt; x
           case Some(yy) =&gt; Some(xx |+| yy)</code></pre></div></div>
-<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">scala&gt; import leopards.given
+<div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">scala&gt; import leopards.given
 scala&gt; Option(1) |+| Option(2)
-val res0: Option[Int] = Some(3)</code></pre></div></div></div></section><section id="_type_classes_5" data-transition="none slide-out"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">package leopards
+val res0: Option[Int] = Some(3)</code></pre></div></div></div></section><section id="_type_classes_5" data-transition="none slide-out"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-line-numbers="3|11" data-lang="scala">package leopards
 
 given optionMonoid[A](using $sa: Semigroup[A]): Monoid[Option[A]] with
   def empty = None
@@ -484,7 +484,7 @@ given mapMonoid[A, B: Semigroup]: Monoid[Map[A, B]] with
   def combine(x: Map[A, B], y: Map[A, B]) =
     y.foldLeft(x):
       case (acc, (k, v)) =&gt;
-        acc.updatedWith(k)(_ |+| Some(v))</code></pre></div></div></div></section><section id="_type_classes_7" data-transition="none slide-out"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">package leopards
+        acc.updatedWith(k)(_ |+| Some(v))</code></pre></div></div></div></section><section id="_type_classes_7" data-transition="none slide-out"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-line-numbers="3|9" data-lang="scala">package leopards
 
 given mapMonoid[A, B](using $sb: Semigroup[B]): Monoid[Map[A, B]] with
   val empty = Map.empty
@@ -492,14 +492,7 @@ given mapMonoid[A, B](using $sb: Semigroup[B]): Monoid[Map[A, B]] with
     y.foldLeft(x):
       case (acc, (k, v)) =&gt;
         acc.updatedWith(k)(ov2 =&gt;
-          optionMonoid(using $sb).combine(ov2, Some(v)))</code></pre></div></div></div></section><section id="_type_classes_8"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">package leopards
-
-trait Monoid[A] extends Semigroup[A]:
-  def empty: A
-
-  extension (as: IterableOnce[A])
-    def combineAll: A =
-      as.iterator.foldLeft(empty)(combine)</code></pre></div></div></div></section><section id="_type_classes_9" data-transition="slide-in none"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">package leopards
+          optionMonoid(using $sb).combine(ov2, Some(v)))</code></pre></div></div></div></section><section id="_type_classes_8" data-transition="slide-in none"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-line-numbers="6,7,8|10,11,12" data-lang="scala">package leopards
 
 trait Monoid[A] extends Semigroup[A]:
   def empty: A
@@ -510,7 +503,7 @@ trait Monoid[A] extends Semigroup[A]:
 
 extension [A](as: IterableOnce[A])
   def foldMap[B](f: A =&gt; B)(using m: Monoid[B]): B =
-    as.iterator.foldLeft(m.empty)((acc, a) =&gt; acc |+| f(a))</code></pre></div></div></div></section><section id="_type_classes_10" data-transition="none slide-out"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">package leopards
+    as.iterator.foldLeft(m.empty)((acc, a) =&gt; acc |+| f(a))</code></pre></div></div></div></section><section id="_type_classes_9" data-transition="none slide-out"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-line-numbers="8" data-lang="scala">package leopards
 
 trait Monoid[A] extends Semigroup[A]:
   def empty: A
@@ -521,11 +514,11 @@ trait Monoid[A] extends Semigroup[A]:
 
 extension [A](as: IterableOnce[A])
   def foldMap[B](f: A =&gt; B)(using m: Monoid[B]): B =
-    as.iterator.foldLeft(m.empty)((acc, a) =&gt; acc |+| f(a))</code></pre></div></div></div></section><section id="_type_classes_11" data-transition="slide-in none"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">def bag[A](as: IterableOnce[A]): Map[A, Int] =
+    as.iterator.foldLeft(m.empty)((acc, a) =&gt; acc |+| f(a))</code></pre></div></div></div></section><section id="_type_classes_10" data-transition="slide-in none"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">def bag[A](as: IterableOnce[A]): Map[A, Int] =
   as.foldMap(a =&gt; Map(a -&gt; 1))
 
 scala&gt; val charOccurs = bag("scala".toList)
-val charOccurs: Map[Char, Int] = Map(s -&gt; 1, c -&gt; 1, a -&gt; 2, l -&gt; 1)</code></pre></div></div></div></section><section id="_type_classes_12" data-transition="none slide-out"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">def bag[A](as: IterableOnce[A]): Map[A, Int] =
+val charOccurs: Map[Char, Int] = Map(s -&gt; 1, c -&gt; 1, a -&gt; 2, l -&gt; 1)</code></pre></div></div></div></section><section id="_type_classes_11" data-transition="none slide-out"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">def bag[A](as: IterableOnce[A]): Map[A, Int] =
   as.foldMap(a =&gt; Map(a -&gt; 1))(using mapMonoid[A, Int](using intAdditionMonoid))
 
 scala&gt; val charOccurs = bag("scala".toList)
@@ -953,7 +946,8 @@ Reveal.addEventListener('ready', function () {
 Reveal.addEventListener('resize', function () {
   layoutSlideContents(1200, 700)
 });</script><link rel="stylesheet" href="css/solarized-dark.css"/>
-<script src="highlight/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.3/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.3/languages/scala.min.js"></script>
 
 <script>
 
@@ -1391,4 +1385,4 @@ hljs.configure({
   ignoreUnescapedHTML: true,
 });
 hljs.highlightAll();
-</script></body></html>
+</script><script src="scala.min.js"></script></body></html>
