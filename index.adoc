@@ -1,6 +1,6 @@
 [.columns]
 = Functional Programming in Scala in 2023
-:source-highlighter: highlightjs
+:source-highlighter: highlight.js
 :highlightjs-theme: css/solarized-dark.css
 :highlightjsdir: highlight
 :revealjs_theme: moon
@@ -292,8 +292,7 @@ object Semigroup {
 ----
 
 
-
-=== Functors
+== Functors
 [source,scala]
 ----
 package leopards
@@ -376,8 +375,6 @@ trait Traverse[F[_]] extends Functor[F], Foldable[F]:
 === Functors
 
 image::images/fpis-traverse.jpg[Snippet of chapter 12 of Functional Programming in Scala,60%]
-
-
 
 [%notitle]
 == FPiS to Scala 2
@@ -511,6 +508,29 @@ trait Applicative[F[_]] extends Functor[F]:
 
 [source,scala]
 ----
+def fetchEmployee: IO[Option[Employee]] = ???
+def fetchPayInfo: IO[Option[PayInfo]] = ???
+
+def generatePayStub(employee: Employee, payInfo: PayInfo): PayStub = ???
+
+val payStub: IO[Option[PayStub]] = 
+  (fetchEmployee, fetchPayInfo).map(generatePayStub)
+----
+
+[%step]
+[source,scala]
+----
+[error] Found:    PayStub
+[error] Required: Option[PayStub]
+[error]   (fetchEmployee, fetchPayInfo).mapN(generatePayStub)
+[error]                                      ^^^^^^^^^^^^^^^
+----
+
+[%notitle]
+=== Transformers
+
+[source,scala]
+----
 package leopards
 
 opaque type OptionT[F[_], A] = F[Option[A]]
@@ -533,22 +553,17 @@ object OptionT:
 
 [source,scala]
 ----
-opaque type OptionT[F[_], A] = F[Option[A]]
+def fetchEmployee: IO[Option[Employee]] = ???
+def fetchPayInfo: IO[Option[PayInfo]] = ???
 
-object OptionT:
-  def fromOption[F[_], A](oa: Option[A])(using F: Applicative[F]): OptionT[F, A] =
-    apply(F.pure(oa))
+def generatePayStub(employee: Employee, payInfo: PayInfo): PayStub = ???
 
-  def liftF[F[_], A](fa: F[A])(using Functor[F]): OptionT[F, A] =
-    apply(fa.map(Some(_)))
-
-  def liftK[F[_]](using Functor[F]): [X] => F[X] => OptionT[F, X] =
-    [X] => liftF(_: F[X])
-
-  extension [F[_], A](fa: OptionT[F, A])
-    def value: F[Option[A]] = fa
-    def mapK[G[_]](fk: [X] => F[X] => G[X]): OptionT[G, A] = fk(fa.value)
+val payStub: IO[Option[PayStub]] =
+  (OptionT(fetchEmployee), OptionT(fetchPayInfo))
+    .map(generatePayStub)
+    .value
 ----
+
 
 [%notitle]
 === Transformers
