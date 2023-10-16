@@ -413,7 +413,22 @@ ul.byline {
 ul.byline li + li {
   margin-top: 0.25em;
 }
-</style><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/v4-shims.min.css"><link rel="stylesheet" href="css/presentation.css"></head><body><div class="reveal"><div class="slides"><section class="title" data-state="title"><h1>Functional Programming in Scala in 2023</h1><div class="preamble"><div class="imageblock"><img src="images/fpis-cover.jpg" alt="Cover of FPiS Second Edition" width="400"></div></div></section>
+</style><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/v4-shims.min.css"><link rel="stylesheet" href="css/presentation.css"></head><body><div class="reveal"><div class="slides"><section class="title columns" data-state="title"><h1>Functional Programming in Scala in 2023</h1><div class="preamble"><div class="imageblock"><img src="images/fpis-cover.jpg" alt="Cover of FPiS Second Edition" width="400"></div></div></section>
+<section id="_functional_programming_in_scala_in_2023"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-diff hljs" data-noescape="true" data-lang="diff">chapter1.adoc  |  258 +++++++-----
+chapter2.adoc  |  543 +++++++++++++++---------
+chapter3.adoc  | 1112 ++++++++++++++++++++++++++++++++++++------------
+chapter4.adoc  |  893 +++++++++++++++++++++++++++++----------
+chapter5.adoc  |  767 +++++++++++++++++++++++++--------
+chapter6.adoc  |  756 ++++++++++++++++++++++++---------
+chapter7.adoc  | 1095 ++++++++++++++++++++++++++++++-----------------
+chapter8.adoc  | 1279 ++++++++++++++++++++++++++++++++++++++++---------------
+chapter9.adoc  | 1369 ++++++++++++++++++++++++++++++++++++++++++-----------------
+chapter10.adoc | 1085 +++++++++++++++++++++++++++++++++++++++--------
+chapter11.adoc | 1174 +++++++++++++++++++++++++++++++++++++++------------
+chapter12.adoc | 1635 ++++++++++++++++++++++++++++++++++++++++++++++++++++------------------
+chapter13.adoc | 1493 +++++++++++++++++++++++++++++++++++++++++++---------------------
+chapter14.adoc |  620 +++++++++++++++------------
+chapter15.adoc | 1921 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++---------------------------</code></pre></div></div></div></section>
 <section><section id="_type_classes"><h2>Type Classes</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">package leopards
 
 trait Semigroup[A]:
@@ -550,8 +565,49 @@ object Semigroup {
       val typeClassInstance = tc
     }
   }
-}</code></pre></div></div></div></section></section>
-<section><section id="_fpis_to_scala_2"><div class="slide-content"><div class="paragraph"><p>FPiS &#8658; Scala 2</p></div></div></section><section id="_fpis_to_scala_2_2"><div class="slide-content"><table class="tableblock frame-all grid-all" style="width:100%"><colgroup><col style="width:33.3333%"><col style="width:33.3333%"><col style="width:33.3334%"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Feature</th><th class="tableblock halign-left valign-top">Scala 2</th><th class="tableblock halign-left valign-top">Scala 3</th></tr><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Type classes</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Simulacrum</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Built-in</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Type lambdas</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Kind Projector</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Built-in (-Ykind-projector)</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Arity &amp; data polymorphism</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Shapeless</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Built-in</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Derivation</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Shapeless</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Built-in</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Partial unification (SI-2712)</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">-Ypartial-unification (2.11+)</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Built-in</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Enumerations &amp; ADTs</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Enumeratum et al</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Built-in</p></td></tr></table></div></section><section id="_fpis_to_scala_2_3"><div class="slide-content"><div class="imageblock"><img src="images/fpis-traverse.jpg" alt="Snippet of chapter 12 of Functional Programming in Scala" width="60%"></div></div></section><section id="_composition_in_scalaz"><h2>😱 Composition in Scalaz</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">val vname = validateName(name)
+}</code></pre></div></div></div></section><section id="_functors"><h2>Functors</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">package leopards
+
+trait Functor[F[_]]:
+  extension [A](fa: F[A])
+    def map[B](f: A =&gt; B): F[B]
+    def as[B](b: B): F[B] = map(_ =&gt; b)
+    def void: F[Unit] = as(())
+
+  def lift[A, B](f: A =&gt; B): F[A] =&gt; F[B] =
+    _.map(f)</code></pre></div></div></div></section><section id="_functors_2"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">package leopards
+
+trait Applicative[F[_]] extends Functor[F]:
+  def pure[A](a: A): F[A]
+  extension [A](fa: F[A])
+    def map2[B, C](fb: F[B])(f: (A, B) =&gt; C): F[C]
+
+    override def map[B](f: A =&gt; B): F[B] =
+      map2(pure(()))((a, _) =&gt; f(a))</code></pre></div></div></div></section><section id="_functors_3"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">package leopards
+
+trait Monad[F[_]] extends Applicative[F]:
+  extension [A](fa: F[A])
+    def flatMap[B](f: A =&gt; F[B]): F[B]
+
+    override def map[B](f: A =&gt; B): F[B] =
+      flatMap(f andThen pure)
+
+    override def map2[B, C](fb: F[B])(f: (A, B) =&gt; C): F[C] =
+      fa.flatMap(a =&gt; fb.map(b =&gt; f(a, b)))</code></pre></div></div></div></section><section id="_functors_4"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">package leopards
+
+trait Foldable[F[_]]:
+  extension [A](fa: F[A])
+    def foldLeft[B](b: B)(f: (B, A) =&gt; B): B
+    def foldRight[B](b: B)(f: (A, B) =&gt; B): B
+    def foldMap[B](f: A =&gt; B)(using b: Monoid[B]): B =
+      foldRight(b.empty)((a, b) =&gt; f(a) |+| b)</code></pre></div></div></div></section><section id="_functors_5"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">package leopards
+
+trait Traverse[F[_]] extends Functor[F], Foldable[F]:
+  extension [A](fa: F[A])
+    def traverse[G[_], B](f: A =&gt; G[B])(using Applicative[G]): G[F[B]]
+
+  extension [G[_], A](fga: F[G[A]])
+    def sequence(using Applicative[G]): G[F[A]] = fga.traverse(identity)</code></pre></div></div></div></section><section id="_functors_6"><div class="slide-content"><div class="imageblock"><img src="images/fpis-traverse.jpg" alt="Snippet of chapter 12 of Functional Programming in Scala" width="60%"></div></div></section></section>
+<section><section id="_fpis_to_scala_2"><div class="slide-content"><div class="paragraph"><p>FPiS &#8658; Scala 2</p></div></div></section><section id="_fpis_to_scala_2_2"><div class="slide-content"><table class="tableblock frame-all grid-all" style="width:100%"><colgroup><col style="width:33.3333%"><col style="width:33.3333%"><col style="width:33.3334%"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Feature</th><th class="tableblock halign-left valign-top">Scala 2</th><th class="tableblock halign-left valign-top">Scala 3</th></tr><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Type classes</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Simulacrum</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Built-in</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Type lambdas</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Kind Projector</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Built-in (-Ykind-projector)</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Arity &amp; data polymorphism</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Shapeless</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Built-in</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Derivation</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Shapeless</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Built-in</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Partial unification (SI-2712)</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">-Ypartial-unification (2.11+)</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Built-in</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Enumerations &amp; ADTs</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Enumeratum et al</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Built-in</p></td></tr></table></div></section><section id="_composition_in_scalaz"><h2>😱 Composition in Scalaz</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">val vname = validateName(name)
 val vbday = validateBirthday(bday)
 val vphone = validatePhone(phone)
 
@@ -561,16 +617,18 @@ val vbday = validateBirthday(bday)
 val vphone = validatePhone(phone)
 
 val personInfo = (vname, vbday, vphone).mapN(PersonInfo(_, _, _))</code></pre></div></div>
-<div class="ulist notes"><ul><li><p>Replaces DSL with regular tuples</p></li><li><p>Syntax enrichments generated at build time (of cats-core) with a source generator</p></li><li><p>Supports composing up to 22 values</p></li></ul></div></div></section><section id="_composition_in_scala_3"><h2>😱 Composition in Scala 3</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">trait Apply[F[_]] extends Functor[F], Semigroupal[F]:
-  extension [A](fa: F[A]) def map2[B, Z](fb: F[B])(f: (A, B) =&gt; Z): F[Z]
+<div class="ulist notes"><ul><li><p>Replaces DSL with regular tuples</p></li><li><p>Syntax enrichments generated at build time (of cats-core) with a source generator</p></li><li><p>Supports composing up to 22 values</p></li></ul></div></div></section><section id="_composition_in_scala_3"><h2>😱 Composition in Scala 3</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">trait Applicative[F[_]] extends Functor[F]:
+  def pure[A](a: A): F[A]
+  extension [A](fa: F[A]) def map2[B, C](fb: F[B])(f: (A, B) =&gt; C): F[C]
 
   extension [T &lt;: NonEmptyTuple](tuple: T)
     def mapN[B](using Tuple.IsMappedBy[F][T])(f: Tuple.InverseMap[T, F] =&gt; B): F[B] =
       t.tupled.map(f)
 
     def tupled(using Tuple.IsMappedBy[F][T]): F[Tuple.InverseMap[T, F]] =
-      ???</code></pre></div></div></div></section><section id="_composition_in_scala_3_2"><h2>😱 Composition in Scala 3</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">trait Apply[F[_]] extends Functor[F], Semigroupal[F]:
-  extension [A](fa: F[A]) def map2[B, Z](fb: F[B])(f: (A, B) =&gt; Z): F[Z]
+      ???</code></pre></div></div></div></section><section id="_composition_in_scala_3_2"><h2>😱 Composition in Scala 3</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">trait Applicative[F[_]] extends Functor[F]:
+  def pure[A](a: A): F[A]
+  extension [A](fa: F[A]) def map2[B, C](fb: F[B])(f: (A, B) =&gt; C): F[C]
 
   extension [T &lt;: NonEmptyTuple](tuple: T)
     def mapN[B](using Tuple.IsMappedBy[F][T])(f: Tuple.InverseMap[T, F] =&gt; B): F[B] =
@@ -584,8 +642,9 @@ val personInfo = (vname, vbday, vphone).mapN(PersonInfo(_, _, _))</code></pre></
           val tail = loop(tl)
           hd.map2(tail)(_ *: _)
       loop(t).asInstanceOf[F[Tuple.InverseMap[T, F]]]</code></pre></div></div>
-<div class="ulist notes"><ul><li><p>Efficient but requires casting / type checks</p></li></ul></div></div></section><section id="_composition_in_scala_3_3"><h2>😱 Composition in Scala 3</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">trait Apply[F[_]] extends Functor[F], Semigroupal[F]:
-  extension [A](fa: F[A]) def map2[B, Z](fb: F[B])(f: (A, B) =&gt; Z): F[Z]
+<div class="ulist notes"><ul><li><p>Efficient but requires casting / type checks</p></li></ul></div></div></section><section id="_composition_in_scala_3_3"><h2>😱 Composition in Scala 3</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">trait Applicative[F[_]] extends Functor[F]:
+  def pure[A](a: A): F[A]
+  extension [A](fa: F[A]) def map2[B, C](fb: F[B])(f: (A, B) =&gt; C): F[C]
 
   extension [T &lt;: NonEmptyTuple](tuple: T)
     inline def mapN[B](using Tuple.IsMappedBy[F][T])(f: Tuple.InverseMap[T, F] =&gt; B): F[B] =
@@ -604,9 +663,63 @@ val personInfo = (vname, vbday, vphone).mapN(PersonInfo(_, _, _))</code></pre></
         val tail = tupledGeneric(t.value.tail)
         head.map2(tail)(_ *: _)</code></pre></div></div>
 <div class="ulist notes"><ul><li><p>Type safe but runtime overhead</p></li><li><p>Courtesy of Daniel Beskin (@ncreep)</p></li></ul></div></div></section></section>
-<section id="_transformers"><h2>Transformers</h2><div class="slide-content"><div class="paragraph"><p>TODO
-Opaque types &amp; extension methods</p></div></div></section>
-<section id="_derivation"><h2>Derivation</h2><div class="slide-content"><div class="paragraph"><p>TODO</p></div></div></section>
+<section><section id="_transformers"><h2>Transformers</h2><div class="slide-content"><div class="ulist"><ul><li><p>Transformers allow selection of a different functor</p></li><li><p>Transformers are often considered difficult to use</p></li><li><p>Transformers introduce additional wrapping, which leads to concerns over performance</p></li></ul></div></div></section><section id="_transformers_2"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">package leopards
+
+opaque type OptionT[F[_], A] = F[Option[A]]
+
+object OptionT:
+  def apply[F[_], A](o: F[Option[A]]): OptionT[F, A] = o
+
+  extension [F[_], A](fa: OptionT[F, A])
+    def value: F[Option[A]] = fa
+
+  given [F[_]](using F: Monad[F]): Monad[[X] =&gt;&gt; OptionT[F, X]] with
+    def pure[A](a: A) = F.pure(Some(a))
+    extension [A](ota: OptionT[F, A])
+      def flatMap[B](f: A =&gt; OptionT[F, B]): OptionT[F, B] =
+        F.flatMap(ota)(oa =&gt; oa.fold(F.pure(None))(f))</code></pre></div></div></div></section><section id="_transformers_3"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">opaque type OptionT[F[_], A] = F[Option[A]]
+
+object OptionT:
+  def fromOption[F[_], A](oa: Option[A])(using F: Applicative[F]): OptionT[F, A] =
+    apply(F.pure(oa))
+
+  def liftF[F[_], A](fa: F[A])(using Functor[F]): OptionT[F, A] =
+    apply(fa.map(Some(_)))
+
+  def liftK[F[_]](using Functor[F]): [X] =&gt; F[X] =&gt; OptionT[F, X] =
+    [X] =&gt; liftF(_: F[X])
+
+  extension [F[_], A](fa: OptionT[F, A])
+    def value: F[Option[A]] = fa
+    def mapK[G[_]](fk: [X] =&gt; F[X] =&gt; G[X]): OptionT[G, A] = fk(fa.value)</code></pre></div></div></div></section><section id="_transformers_4"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">package leopards
+
+opaque type Kleisli[F[_], A, B] = A =&gt; F[B]
+
+object Kleisli:
+  def apply[F[_], A, B](f: A =&gt; F[B]): Kleisli[F, A, B] = f
+
+  extension [F[_], A, B](k: Kleisli[F, A, B]) def apply(a: A): F[B] = k(a)
+
+  given [F[_], A](using F: Monad[F]): Monad[[B] =&gt;&gt; Kleisli[F, A, B]] with
+    def pure[B](b: B) = Kleisli(_ =&gt; F.pure(b))
+    extension [B](k: Kleisli[F, A, B])
+      def flatMap[C](f: B =&gt; Kleisli[F, A, C]) =
+        a =&gt; k(a).flatMap(b =&gt; f(b)(a))</code></pre></div></div></div></section></section>
+<section id="_derivation"><h2>Derivation</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">//&gt; using scala "3.3.1"
+//&gt; using dep "io.circe::circe-core:0.14.6"
+
+import io.circe.Codec, io.circe.syntax.*
+
+case class Person(
+  firstName: String, lastName: String, age: Int) derives Codec.AsObject
+
+val p = Person("Michael", "Pilquist", 43)
+println(p.asJson)
+// {
+//   "firstName" : "Michael",
+//   "lastName" : "Pilquist",
+//   "age" : 43
+// }</code></pre></div></div></div></section>
 <section><section id="_cats_3"><div class="slide-content"><div class="paragraph"><p>s/leopards/cats/</p></div></div></section><section id="_cats_3_2"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">import cats.syntax.all.*</code></pre></div></div>
 <div class="paragraph"><p>vs.</p></div>
 <div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">import cats.given</code></pre></div></div></div></section><section id="_tuckman_model_of_functional_scala"><h2>Tuckman Model of Functional Scala</h2><div class="slide-content"><table class="tableblock frame-all grid-all" style="width:100%"><colgroup><col style="width:25%"><col style="width:75%"></colgroup><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Forming</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Melting pot of styles; heavy influence from Haskell</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Storming</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Typelevel founded; scalac forked; Cats founded; integration painful</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Norming</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Cats, Cats Effect, &amp; FS2 emerge as key infrastructure, enabling proliferation of interoperable libraries</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Performing</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Industrial grade, performant, integrated infrastructure; cross-platform; focus on application development</p></td></tr></table></div></section><section id="_headwinds"><h2>Headwinds</h2><div class="slide-content"><div class="ulist"><ul><li><p>Improvements to Java &amp; Kotlin</p><div class="ulist"><ul><li><p>Loom</p></li><li><p>Coroutines</p></li><li><p>Records</p></li></ul></div></li><li><p>Direct Style</p></li></ul></div></div></section><section id="_final"><div class="slide-content"><div class="paragraph"><p>"Just as the past eight years have brought about a sea change in the nature of the Scala ecosystem and the context in which we evaluate and employ functional techniques, so too will the coming eight years bring about evolution and innovation. Perhaps when it comes time to update this volume once again, names such as Cats Effect will seem as dated and ancestral as Scalaz seems to us today."</p></div>

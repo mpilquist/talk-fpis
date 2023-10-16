@@ -1,3 +1,4 @@
+[.columns]
 = Functional Programming in Scala in 2023
 :source-highlighter: highlightjs
 :highlightjs-theme: css/solarized-dark.css
@@ -9,6 +10,28 @@
 :revealjs_width: 1200
 
 image::images/fpis-cover.jpg[Cover of FPiS Second Edition,400]
+
+[%notitle]
+== Functional Programming in Scala in 2023
+
+[source,diff]
+----
+chapter1.adoc  |  258 +++++++-----
+chapter2.adoc  |  543 +++++++++++++++---------
+chapter3.adoc  | 1112 ++++++++++++++++++++++++++++++++++++------------
+chapter4.adoc  |  893 +++++++++++++++++++++++++++++----------
+chapter5.adoc  |  767 +++++++++++++++++++++++++--------
+chapter6.adoc  |  756 ++++++++++++++++++++++++---------
+chapter7.adoc  | 1095 ++++++++++++++++++++++++++++++-----------------
+chapter8.adoc  | 1279 ++++++++++++++++++++++++++++++++++++++++---------------
+chapter9.adoc  | 1369 ++++++++++++++++++++++++++++++++++++++++++-----------------
+chapter10.adoc | 1085 +++++++++++++++++++++++++++++++++++++++--------
+chapter11.adoc | 1174 +++++++++++++++++++++++++++++++++++++++------------
+chapter12.adoc | 1635 ++++++++++++++++++++++++++++++++++++++++++++++++++++------------------
+chapter13.adoc | 1493 +++++++++++++++++++++++++++++++++++++++++++---------------------
+chapter14.adoc |  620 +++++++++++++++------------
+chapter15.adoc | 1921 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++---------------------------
+----
 
 == Type Classes
 
@@ -269,6 +292,93 @@ object Semigroup {
 ----
 
 
+
+=== Functors
+[source,scala]
+----
+package leopards
+ 
+trait Functor[F[_]]:
+  extension [A](fa: F[A])
+    def map[B](f: A => B): F[B]
+    def as[B](b: B): F[B] = map(_ => b)
+    def void: F[Unit] = as(())
+
+  def lift[A, B](f: A => B): F[A] => F[B] =
+    _.map(f)
+----
+
+[%notitle]
+=== Functors
+
+[source,scala]
+----
+package leopards
+
+trait Applicative[F[_]] extends Functor[F]:
+  def pure[A](a: A): F[A]
+  extension [A](fa: F[A])
+    def map2[B, C](fb: F[B])(f: (A, B) => C): F[C]
+
+    override def map[B](f: A => B): F[B] =
+      map2(pure(()))((a, _) => f(a))
+----
+
+[%notitle]
+=== Functors
+
+[source,scala]
+----
+package leopards
+
+trait Monad[F[_]] extends Applicative[F]:
+  extension [A](fa: F[A])
+    def flatMap[B](f: A => F[B]): F[B]
+
+    override def map[B](f: A => B): F[B] =
+      flatMap(f andThen pure)
+
+    override def map2[B, C](fb: F[B])(f: (A, B) => C): F[C] =
+      fa.flatMap(a => fb.map(b => f(a, b)))
+----
+
+[%notitle]
+=== Functors
+
+[source,scala]
+----
+package leopards
+
+trait Foldable[F[_]]:
+  extension [A](fa: F[A])
+    def foldLeft[B](b: B)(f: (B, A) => B): B
+    def foldRight[B](b: B)(f: (A, B) => B): B
+    def foldMap[B](f: A => B)(using b: Monoid[B]): B =
+      foldRight(b.empty)((a, b) => f(a) |+| b)
+----
+
+[%notitle]
+=== Functors
+
+[source,scala]
+----
+package leopards
+
+trait Traverse[F[_]] extends Functor[F], Foldable[F]:
+  extension [A](fa: F[A])
+    def traverse[G[_], B](f: A => G[B])(using Applicative[G]): G[F[B]]
+
+  extension [G[_], A](fga: F[G[A]])
+    def sequence(using Applicative[G]): G[F[A]] = fga.traverse(identity)
+----
+
+[%notitle]
+=== Functors
+
+image::images/fpis-traverse.jpg[Snippet of chapter 12 of Functional Programming in Scala,60%]
+
+
+
 [%notitle]
 == FPiS to Scala 2
 
@@ -287,11 +397,6 @@ Derivation:Shapeless:Built-in
 Partial unification (SI-2712):-Ypartial-unification (2.11+):Built-in
 Enumerations & ADTs:Enumeratum et al:Built-in
 |===
-
-[%notitle]
-=== FPiS to Scala 2
-
-image::images/fpis-traverse.jpg[Snippet of chapter 12 of Functional Programming in Scala,60%]
 
 === 😱 Composition in Scalaz
 
@@ -329,8 +434,9 @@ val personInfo = (vname, vbday, vphone).mapN(PersonInfo(_, _, _))
 
 [source,scala]
 ----
-trait Apply[F[_]] extends Functor[F], Semigroupal[F]:
-  extension [A](fa: F[A]) def map2[B, Z](fb: F[B])(f: (A, B) => Z): F[Z]
+trait Applicative[F[_]] extends Functor[F]:
+  def pure[A](a: A): F[A]
+  extension [A](fa: F[A]) def map2[B, C](fb: F[B])(f: (A, B) => C): F[C]
 
   extension [T <: NonEmptyTuple](tuple: T)
     def mapN[B](using Tuple.IsMappedBy[F][T])(f: Tuple.InverseMap[T, F] => B): F[B] =
@@ -344,8 +450,9 @@ trait Apply[F[_]] extends Functor[F], Semigroupal[F]:
 
 [source,scala]
 ----
-trait Apply[F[_]] extends Functor[F], Semigroupal[F]:
-  extension [A](fa: F[A]) def map2[B, Z](fb: F[B])(f: (A, B) => Z): F[Z]
+trait Applicative[F[_]] extends Functor[F]:
+  def pure[A](a: A): F[A]
+  extension [A](fa: F[A]) def map2[B, C](fb: F[B])(f: (A, B) => C): F[C]
 
   extension [T <: NonEmptyTuple](tuple: T)
     def mapN[B](using Tuple.IsMappedBy[F][T])(f: Tuple.InverseMap[T, F] => B): F[B] =
@@ -367,8 +474,9 @@ trait Apply[F[_]] extends Functor[F], Semigroupal[F]:
 
 [source,scala]
 ----
-trait Apply[F[_]] extends Functor[F], Semigroupal[F]:
-  extension [A](fa: F[A]) def map2[B, Z](fb: F[B])(f: (A, B) => Z): F[Z]
+trait Applicative[F[_]] extends Functor[F]:
+  def pure[A](a: A): F[A]
+  extension [A](fa: F[A]) def map2[B, C](fb: F[B])(f: (A, B) => C): F[C]
 
   extension [T <: NonEmptyTuple](tuple: T)
     inline def mapN[B](using Tuple.IsMappedBy[F][T])(f: Tuple.InverseMap[T, F] => B): F[B] =
@@ -394,12 +502,95 @@ trait Apply[F[_]] extends Functor[F], Semigroupal[F]:
 
 == Transformers
 
-TODO
-Opaque types & extension methods
+* Transformers allow selection of a different functor
+* Transformers are often considered difficult to use
+* Transformers introduce additional wrapping, which leads to concerns over performance
+
+[%notitle]
+=== Transformers
+
+[source,scala]
+----
+package leopards
+
+opaque type OptionT[F[_], A] = F[Option[A]]
+
+object OptionT:
+  def apply[F[_], A](o: F[Option[A]]): OptionT[F, A] = o
+
+  extension [F[_], A](fa: OptionT[F, A])
+    def value: F[Option[A]] = fa
+
+  given [F[_]](using F: Monad[F]): Monad[[X] =>> OptionT[F, X]] with
+    def pure[A](a: A) = F.pure(Some(a))
+    extension [A](ota: OptionT[F, A])
+      def flatMap[B](f: A => OptionT[F, B]): OptionT[F, B] =
+        F.flatMap(ota)(oa => oa.fold(F.pure(None))(f))
+----
+
+[%notitle]
+=== Transformers
+
+[source,scala]
+----
+opaque type OptionT[F[_], A] = F[Option[A]]
+
+object OptionT:
+  def fromOption[F[_], A](oa: Option[A])(using F: Applicative[F]): OptionT[F, A] =
+    apply(F.pure(oa))
+
+  def liftF[F[_], A](fa: F[A])(using Functor[F]): OptionT[F, A] =
+    apply(fa.map(Some(_)))
+
+  def liftK[F[_]](using Functor[F]): [X] => F[X] => OptionT[F, X] =
+    [X] => liftF(_: F[X])
+
+  extension [F[_], A](fa: OptionT[F, A])
+    def value: F[Option[A]] = fa
+    def mapK[G[_]](fk: [X] => F[X] => G[X]): OptionT[G, A] = fk(fa.value)
+----
+
+[%notitle]
+=== Transformers
+
+[source,scala]
+----
+package leopards
+
+opaque type Kleisli[F[_], A, B] = A => F[B]
+
+object Kleisli:
+  def apply[F[_], A, B](f: A => F[B]): Kleisli[F, A, B] = f
+
+  extension [F[_], A, B](k: Kleisli[F, A, B]) def apply(a: A): F[B] = k(a)
+
+  given [F[_], A](using F: Monad[F]): Monad[[B] =>> Kleisli[F, A, B]] with
+    def pure[B](b: B) = Kleisli(_ => F.pure(b))
+    extension [B](k: Kleisli[F, A, B])
+      def flatMap[C](f: B => Kleisli[F, A, C]) =
+        a => k(a).flatMap(b => f(b)(a))
+----
 
 == Derivation
 
-TODO
+[source,scala]
+----
+//> using scala "3.3.1"
+//> using dep "io.circe::circe-core:0.14.6"
+
+import io.circe.Codec, io.circe.syntax.*
+
+case class Person(
+  firstName: String, lastName: String, age: Int) derives Codec.AsObject
+
+val p = Person("Michael", "Pilquist", 43)
+println(p.asJson)
+// {
+//   "firstName" : "Michael",
+//   "lastName" : "Pilquist",
+//   "age" : 43
+// }
+----
 
 [%notitle]
 == Cats 3
