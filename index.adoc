@@ -487,9 +487,9 @@ trait Applicative[F[_]] extends Functor[F]:
 
 == Transformers
 
-* Transformers allow selection of a different functor
-* Transformers are often considered difficult to use
-* Transformers introduce additional wrapping, which leads to concerns over performance
+* Allow selection of a different functor
+* Often considered difficult to use
+* Introduce additional wrapping, which leads to concerns over performance
 
 [%notitle]
 === Transformers

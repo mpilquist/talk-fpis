@@ -657,7 +657,7 @@ val personInfo = (vname, vbday, vphone).mapN(PersonInfo(_, _, _))</code></pre></
         val tail = tupledGeneric(t.value.tail)
         head.map2(tail)(_ *: _)</code></pre></div></div>
 <div class="ulist notes"><ul><li><p>Type safe but runtime overhead</p></li><li><p>Courtesy of Daniel Beskin (@ncreep)</p></li></ul></div></div></section></section>
-<section><section id="_transformers"><h2>Transformers</h2><div class="slide-content"><div class="ulist"><ul><li><p>Transformers allow selection of a different functor</p></li><li><p>Transformers are often considered difficult to use</p></li><li><p>Transformers introduce additional wrapping, which leads to concerns over performance</p></li></ul></div></div></section><section id="_transformers_2"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">def fetchEmployee: IO[Option[Employee]] = ???
+<section><section id="_transformers"><h2>Transformers</h2><div class="slide-content"><div class="ulist"><ul><li><p>Allow selection of a different functor</p></li><li><p>Often considered difficult to use</p></li><li><p>Introduce additional wrapping, which leads to concerns over performance</p></li></ul></div></div></section><section id="_transformers_2"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">def fetchEmployee: IO[Option[Employee]] = ???
 def fetchPayInfo: IO[Option[PayInfo]] = ???
 
 def generatePayStub(employee: Employee, payInfo: PayInfo): PayStub = ???
