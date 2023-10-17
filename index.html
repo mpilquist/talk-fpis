@@ -439,8 +439,8 @@ trait Monoid[A] extends Semigroup[A]:
 
 trait Semigroup[A]:
   def combine(x: A, y: A): A
-  extension (x: A)                           <i class="conum" data-value="1"></i><b>(1)</b>
-    inline def |+|(y: A): A = combine(x, y)
+  extension (x: A)
+    inline def |+|(y: A): A = combine(x, y)    <i class="conum" data-value="1"></i><b>(1)</b>
 
 trait Monoid[A] extends Semigroup[A]:
   def empty: A</code></pre></div></div>
@@ -518,7 +518,7 @@ extension [A](as: IterableOnce[A])
   as.foldMap(a =&gt; Map(a -&gt; 1))
 
 scala&gt; val charOccurs = bag("scala".toList)
-val charOccurs: Map[Char, Int] = Map(s -&gt; 1, c -&gt; 1, a -&gt; 2, l -&gt; 1)</code></pre></div></div></div></section><section id="_type_classes_11" data-transition="none slide-out"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">def bag[A](as: IterableOnce[A]): Map[A, Int] =
+val charOccurs: Map[Char, Int] = Map(s -&gt; 1, c -&gt; 1, a -&gt; 2, l -&gt; 1)</code></pre></div></div></div></section><section id="_type_classes_11" data-transition="none slide-out"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-line-numbers="2" data-lang="scala">def bag[A](as: IterableOnce[A]): Map[A, Int] =
   as.foldMap(a =&gt; Map(a -&gt; 1))(using mapMonoid[A, Int](using intAdditionMonoid))
 
 scala&gt; val charOccurs = bag("scala".toList)
@@ -601,7 +601,7 @@ trait Traverse[F[_]] extends Functor[F], Foldable[F]:
 
   extension [G[_], A](fga: F[G[A]])
     def sequence(using Applicative[G]): G[F[A]] = fga.traverse(identity)</code></pre></div></div></div></section><section id="_functors_6"><div class="slide-content"><div class="imageblock"><img src="images/fpis-traverse.jpg" alt="Snippet of chapter 12 of Functional Programming in Scala" width="60%"></div></div></section></section>
-<section><section id="_fpis_to_scala_2"><div class="slide-content"><div class="paragraph"><p>FPiS &#8658; Scala 2</p></div></div></section><section id="_fpis_to_scala_2_2"><div class="slide-content"><table class="tableblock frame-all grid-all" style="width:100%"><colgroup><col style="width:33.3333%"><col style="width:33.3333%"><col style="width:33.3334%"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Feature</th><th class="tableblock halign-left valign-top">Scala 2</th><th class="tableblock halign-left valign-top">Scala 3</th></tr><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Type classes</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Simulacrum</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Built-in</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Type lambdas</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Kind Projector</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Built-in (-Ykind-projector)</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Arity &amp; data polymorphism</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Shapeless</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Built-in</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Derivation</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Shapeless</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Built-in</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Partial unification (SI-2712)</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">-Ypartial-unification (2.11+)</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Built-in</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Enumerations &amp; ADTs</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Enumeratum et al</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Built-in</p></td></tr></table></div></section><section id="_composition_in_scalaz"><h2>😱 Composition in Scalaz</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">val vname = validateName(name)
+<section><section id="_fpis_to_scala_2"><div class="slide-content"><div class="paragraph"><p>FPiS &#8658; Scala 2</p></div></div></section><section id="_fpis_to_scala_2_2"><div class="slide-content"><table class="tableblock frame-all grid-all" style="width:100%"><colgroup><col style="width:33.3333%"><col style="width:33.3333%"><col style="width:33.3334%"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Feature</th><th class="tableblock halign-left valign-top">Scala 2</th><th class="tableblock halign-left valign-top">Scala 3</th></tr><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Type classes</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Simulacrum</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Built-in</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Type lambdas</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Kind Projector</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Built-in</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Arity &amp; data polymorphism</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Shapeless</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Built-in</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Derivation</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Shapeless</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Built-in</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Partial unification (SI-2712)</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">-Ypartial-unification (2.11+)</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Built-in</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">Enumerations &amp; ADTs</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">sealed trait hierarchies, Enumeratum et al</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Built-in</p></td></tr></table></div></section><section id="_composition_in_scalaz"><h2>😱 Composition in Scalaz</h2><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">val vname = validateName(name)
 val vbday = validateBirthday(bday)
 val vphone = validatePhone(phone)
 
@@ -667,7 +667,7 @@ val payStub: IO[Option[PayStub]] =
 <div class="listingblock fragment"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">[error] Found:    PayStub
 [error] Required: Option[PayStub]
 [error]   (fetchEmployee, fetchPayInfo).mapN(generatePayStub)
-[error]                                      ^^^^^^^^^^^^^^^</code></pre></div></div></div></section><section id="_transformers_3"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">package leopards
+[error]                                      ^^^^^^^^^^^^^^^</code></pre></div></div></div></section><section id="_transformers_3"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-line-numbers="3|6|8,9|11,12,13,14,15" data-lang="scala">package leopards
 
 opaque type OptionT[F[_], A] = F[Option[A]]
 
@@ -681,7 +681,7 @@ object OptionT:
     def pure[A](a: A) = F.pure(Some(a))
     extension [A](ota: OptionT[F, A])
       def flatMap[B](f: A =&gt; OptionT[F, B]): OptionT[F, B] =
-        F.flatMap(ota)(oa =&gt; oa.fold(F.pure(None))(f))</code></pre></div></div></div></section><section id="_transformers_4"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">def fetchEmployee: IO[Option[Employee]] = ???
+        F.flatMap(ota)(oa =&gt; oa.fold(F.pure(None))(f))</code></pre></div></div></div></section><section id="_transformers_4"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-line-numbers="7,8,9" data-lang="scala">def fetchEmployee: IO[Option[Employee]] = ???
 def fetchPayInfo: IO[Option[PayInfo]] = ???
 
 def generatePayStub(employee: Employee, payInfo: PayInfo): PayStub = ???
@@ -689,7 +689,7 @@ def generatePayStub(employee: Employee, payInfo: PayInfo): PayStub = ???
 val payStub: IO[Option[PayStub]] =
   (OptionT(fetchEmployee), OptionT(fetchPayInfo))
     .map(generatePayStub)
-    .value</code></pre></div></div></div></section><section id="_transformers_5"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-lang="scala">package leopards
+    .value</code></pre></div></div></div></section><section id="_transformers_5"><div class="slide-content"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-scala hljs" data-noescape="true" data-line-numbers="3|6|8|10,11,12,13,14" data-lang="scala">package leopards
 
 opaque type Kleisli[F[_], A, B] = A =&gt; F[B]
 

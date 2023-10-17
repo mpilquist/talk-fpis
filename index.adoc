@@ -56,8 +56,8 @@ package leopards
 
 trait Semigroup[A]:
   def combine(x: A, y: A): A
-  extension (x: A)                           <1>
-    inline def |+|(y: A): A = combine(x, y)
+  extension (x: A)
+    inline def |+|(y: A): A = combine(x, y)    <1>
 
 trait Monoid[A] extends Semigroup[A]:
   def empty: A
@@ -219,7 +219,7 @@ val charOccurs: Map[Char, Int] = Map(s -> 1, c -> 1, a -> 2, l -> 1)
 [%notitle, transition=none slide-out]
 === Type Classes
 
-[source,scala]
+[source,scala,highlight=2]
 ----
 def bag[A](as: IterableOnce[A]): Map[A, Int] =
   as.foldMap(a => Map(a -> 1))(using mapMonoid[A, Int](using intAdditionMonoid))
@@ -376,11 +376,11 @@ FPiS => Scala 2
 |===
 Feature:Scala 2:Scala 3
 Type classes:Simulacrum:Built-in
-Type lambdas:Kind Projector:Built-in (-Ykind-projector)
+Type lambdas:Kind Projector:Built-in
 Arity & data polymorphism:Shapeless:Built-in
 Derivation:Shapeless:Built-in
 Partial unification (SI-2712):-Ypartial-unification (2.11+):Built-in
-Enumerations & ADTs:Enumeratum et al:Built-in
+Enumerations & ADTs:sealed trait hierarchies, Enumeratum et al:Built-in
 |===
 
 === 😱 Composition in Scalaz
@@ -517,7 +517,7 @@ val payStub: IO[Option[PayStub]] =
 [%notitle]
 === Transformers
 
-[source,scala]
+[source,scala,highlight=3|6|8-9|11-15]
 ----
 package leopards
 
@@ -539,7 +539,7 @@ object OptionT:
 [%notitle]
 === Transformers
 
-[source,scala]
+[source,scala,highlight=7-9]
 ----
 def fetchEmployee: IO[Option[Employee]] = ???
 def fetchPayInfo: IO[Option[PayInfo]] = ???
@@ -556,7 +556,7 @@ val payStub: IO[Option[PayStub]] =
 [%notitle]
 === Transformers
 
-[source,scala]
+[source,scala,highlight=3|6|8|10-14]
 ----
 package leopards
 
