@@ -578,8 +578,8 @@ object Kleisli:
 
 [source,scala]
 ----
-//> using scala "3.3.1"
-//> using dep "io.circe::circe-core:0.14.6"
+//> using scala 3.3.1
+//> using dep io.circe::circe-core:0.14.6
 
 import io.circe.Codec, io.circe.syntax.*
 
