@@ -176,8 +176,8 @@ trait Monoid[A] extends Semigroup[A]:
   def empty: A
 
 extension [A](as: IterableOnce[A])
-  def combineAll: A =
-    as.iterator.foldLeft(empty)(combine)
+  def combineAll(using m: Monoid[A]): A =
+    as.iterator.foldLeft(m.empty)(m.combine)
 
   def foldMap[B](f: A => B)(using m: Monoid[B]): B =
     as.iterator.foldLeft(m.empty)((acc, a) => acc |+| f(a))
