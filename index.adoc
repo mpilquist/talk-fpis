@@ -144,7 +144,7 @@ package leopards
 given mapMonoid[A, B: Semigroup]: Monoid[Map[A, B]] with
   val empty = Map.empty
   def combine(x: Map[A, B], y: Map[A, B]) =
-    y.foldLeft(x): 
+    y.foldLeft(x):
       case (acc, (k, v)) =>
         acc.updatedWith(k)(_ |+| Some(v))
 ----
@@ -159,7 +159,7 @@ package leopards
 given mapMonoid[A, B](using $sb: Semigroup[B]): Monoid[Map[A, B]] with
   val empty = Map.empty
   def combine(x: Map[A, B], y: Map[A, B]) =
-    y.foldLeft(x): 
+    y.foldLeft(x):
       case (acc, (k, v)) =>
         acc.updatedWith(k)(ov2 =>
           optionMonoid(using $sb).combine(ov2, Some(v)))
@@ -168,41 +168,20 @@ given mapMonoid[A, B](using $sb: Semigroup[B]): Monoid[Map[A, B]] with
 [%notitle, transition=slide-in none]
 === Type Classes
 
-[source,scala,highlight=6-8|10-12]
+[source,scala,highlight=6-8|10-11]
 ----
 package leopards
 
 trait Monoid[A] extends Semigroup[A]:
   def empty: A
 
-  extension (as: IterableOnce[A])
-    def combineAll: A =
-      as.iterator.foldLeft(empty)(combine)
-
 extension [A](as: IterableOnce[A])
+  def combineAll: A =
+    as.iterator.foldLeft(empty)(combine)
+
   def foldMap[B](f: A => B)(using m: Monoid[B]): B =
     as.iterator.foldLeft(m.empty)((acc, a) => acc |+| f(a))
 ----
-
-[%notitle, transition=none slide-out]
-=== Type Classes
-
-[source,scala,highlight=8]
-----
-package leopards
-
-trait Monoid[A] extends Semigroup[A]:
-  def empty: A
-
-  extension (as: IterableOnce[A])
-    def combineAll: A =
-      as.foldMap(identity)(using this)
-
-extension [A](as: IterableOnce[A])
-  def foldMap[B](f: A => B)(using m: Monoid[B]): B =
-    as.iterator.foldLeft(m.empty)((acc, a) => acc |+| f(a))
-----
-
 
 [%notitle, transition=slide-in none]
 === Type Classes
@@ -501,8 +480,8 @@ def fetchPayInfo: IO[Option[PayInfo]] = ???
 
 def generatePayStub(employee: Employee, payInfo: PayInfo): PayStub = ???
 
-val payStub: IO[Option[PayStub]] = 
-  (fetchEmployee, fetchPayInfo).map(generatePayStub)
+val payStub: IO[Option[PayStub]] =
+  (fetchEmployee, fetchPayInfo).mapN(generatePayStub)
 ----
 
 [%step]
