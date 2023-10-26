@@ -686,7 +686,7 @@ object Kleisli:
 
   extension [F[_], A, B](k: Kleisli[F, A, B]) def apply(a: A): F[B] = k(a)
 
-  given [F[_], A](using F: Monad[F]): Monad[[B] =&gt;&gt; Kleisli[F, A, B]] with
+  given [F[_], A](using F: Monad[F]): Monad[[X] =&gt;&gt; Kleisli[F, A, X]] with
     def pure[B](b: B) = Kleisli(_ =&gt; F.pure(b))
     extension [B](k: Kleisli[F, A, B])
       def flatMap[C](f: B =&gt; Kleisli[F, A, C]) =
